@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="MCS.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="MCSStoreContainer">
+    <EntitySet Name="ModelSet" EntityType="MCS.Store.ModelSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="EquipmentSet" EntityType="MCS.Store.EquipmentSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ManufacturerSet" EntityType="MCS.Store.ManufacturerSet" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="ManufacturerEquipment" Association="MCS.Store.ManufacturerEquipment">
+      <End Role="Manufacturer" EntitySet="ManufacturerSet" />
+      <End Role="Equipment" EntitySet="EquipmentSet" />
+    </AssociationSet>
+    <AssociationSet Name="ModelEquipment" Association="MCS.Store.ModelEquipment">
+      <End Role="Model" EntitySet="ModelSet" />
+      <End Role="Equipment" EntitySet="EquipmentSet" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="ModelSet">
+    <Key>
+      <PropertyRef Name="ModelId" />
+    </Key>
+    <Property Name="ModelId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="strName" Type="nvarchar" Nullable="false" MaxLength="10" />
+    <Property Name="intManufacturerID" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="EquipmentSet">
+    <Key>
+      <PropertyRef Name="intEquipmentId" />
+    </Key>
+    <Property Name="intEquipmentId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="intGarageRoom" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="strManufYear" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="intSNPrefixId" Type="int" Nullable="true" />
+    <Property Name="Manufacturer_intManufacturerID" Type="int" Nullable="false" />
+    <Property Name="ModelModelId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ManufacturerSet">
+    <Key>
+      <PropertyRef Name="intManufacturerID" />
+    </Key>
+    <Property Name="intManufacturerID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ManufacturerDescription" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="strName" Type="nvarchar" Nullable="true" MaxLength="50" />
+  </EntityType>
+  <Association Name="ManufacturerEquipment">
+    <End Role="Manufacturer" Type="MCS.Store.ManufacturerSet" Multiplicity="1" />
+    <End Role="Equipment" Type="MCS.Store.EquipmentSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Manufacturer">
+        <PropertyRef Name="intManufacturerID" />
+      </Principal>
+      <Dependent Role="Equipment">
+        <PropertyRef Name="Manufacturer_intManufacturerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="ModelEquipment">
+    <End Role="Model" Type="MCS.Store.ModelSet" Multiplicity="1" />
+    <End Role="Equipment" Type="MCS.Store.EquipmentSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Model">
+        <PropertyRef Name="ModelId" />
+      </Principal>
+      <Dependent Role="Equipment">
+        <PropertyRef Name="ModelModelId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="MCS" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="MCSContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ModelSet" EntityType="MCS.Model" />
+          <EntitySet Name="EquipmentSet" EntityType="MCS.Equipment" />
+          <EntitySet Name="ManufacturerSet" EntityType="MCS.Manufacturer" />
+          <AssociationSet Name="ManufacturerEquipment" Association="MCS.ManufacturerEquipment">
+            <End Role="Manufacturer" EntitySet="ManufacturerSet" />
+            <End Role="Equipment" EntitySet="EquipmentSet" />
+          </AssociationSet>
+          <AssociationSet Name="ModelEquipment" Association="MCS.ModelEquipment">
+            <End Role="Model" EntitySet="ModelSet" />
+            <End Role="Equipment" EntitySet="EquipmentSet" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Model">
+          <Key>
+            <PropertyRef Name="ModelId" />
+          </Key>
+          <Property Name="ModelId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" ConcurrencyMode="None" />
+          <Property Name="strName" Type="String" Nullable="false" MaxLength="10" />
+          <Property Name="intManufacturerID" Type="Int32" Nullable="true" />
+          <NavigationProperty Name="Equipment" Relationship="MCS.ModelEquipment" FromRole="Model" ToRole="Equipment" />
+        </EntityType>
+        <EntityType Name="Equipment">
+          <Key>
+            <PropertyRef Name="intEquipmentId" />
+          </Key>
+          <Property Name="intEquipmentId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="intGarageRoom" Type="String" Nullable="true" MaxLength="50" />
+          <Property Name="strManufYear" Type="String" Nullable="true" MaxLength="50" />
+          <Property Name="intSNPrefixId" Type="Int32" Nullable="true" />
+          <NavigationProperty Name="Manufacturer" Relationship="MCS.ManufacturerEquipment" FromRole="Equipment" ToRole="Manufacturer" />
+          <Property Name="Manufacturer_intManufacturerID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Model" Relationship="MCS.ModelEquipment" FromRole="Equipment" ToRole="Model" />
+          <Property Name="ModelModelId" Type="Int32" Nullable="false" ConcurrencyMode="None" />
+        </EntityType>
+        <EntityType Name="Manufacturer">
+          <Key>
+            <PropertyRef Name="intManufacturerID" />
+          </Key>
+          <Property Name="intManufacturerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ManufacturerDescription" Type="String" MaxLength="50" Nullable="true" />
+          <Property Name="strName" Type="String" Nullable="true" MaxLength="50" />
+          <NavigationProperty Name="Equipment" Relationship="MCS.ManufacturerEquipment" FromRole="Manufacturer" ToRole="Equipment" />
+        </EntityType>
+        <Association Name="ManufacturerEquipment">
+          <End Type="MCS.Manufacturer" Role="Manufacturer" Multiplicity="1" />
+          <End Type="MCS.Equipment" Role="Equipment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Manufacturer">
+              <PropertyRef Name="intManufacturerID" />
+            </Principal>
+            <Dependent Role="Equipment">
+              <PropertyRef Name="Manufacturer_intManufacturerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ModelEquipment">
+          <End Type="MCS.Model" Role="Model" Multiplicity="1" />
+          <End Type="MCS.Equipment" Role="Equipment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Model">
+              <PropertyRef Name="ModelId" />
+            </Principal>
+            <Dependent Role="Equipment">
+              <PropertyRef Name="ModelModelId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="MCSStoreContainer" CdmEntityContainer="MCSContainer">
+    <EntitySetMapping Name="ModelSet">
+      <EntityTypeMapping TypeName="IsTypeOf(MCS.Model)">
+        <MappingFragment StoreEntitySet="ModelSet">
+          <ScalarProperty Name="ModelId" ColumnName="ModelId" />
+          <ScalarProperty Name="strName" ColumnName="strName" />
+          <ScalarProperty Name="intManufacturerID" ColumnName="intManufacturerID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EquipmentSet">
+      <EntityTypeMapping TypeName="IsTypeOf(MCS.Equipment)">
+        <MappingFragment StoreEntitySet="EquipmentSet">
+          <ScalarProperty Name="intEquipmentId" ColumnName="intEquipmentId" />
+          <ScalarProperty Name="intGarageRoom" ColumnName="intGarageRoom" />
+          <ScalarProperty Name="strManufYear" ColumnName="strManufYear" />
+          <ScalarProperty Name="intSNPrefixId" ColumnName="intSNPrefixId" />
+          <ScalarProperty Name="Manufacturer_intManufacturerID" ColumnName="Manufacturer_intManufacturerID" />
+          <ScalarProperty Name="ModelModelId" ColumnName="ModelModelId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ManufacturerSet">
+      <EntityTypeMapping TypeName="IsTypeOf(MCS.Manufacturer)">
+        <MappingFragment StoreEntitySet="ManufacturerSet">
+          <ScalarProperty Name="intManufacturerID" ColumnName="intManufacturerID" />
+          <ScalarProperty Name="ManufacturerDescription" ColumnName="ManufacturerDescription" />
+          <ScalarProperty Name="strName" ColumnName="strName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
